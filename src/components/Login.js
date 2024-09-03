@@ -8,13 +8,13 @@ import {
 } from "firebase/auth";
 import { auth } from "../utils/firebase";
 import { addUser } from "../utils/userSlice";
-import { useNavigate } from "react-router";
+
 import { useDispatch } from "react-redux";
 const Login = () => {
 	const [isSignIn, setIsSignIn] = useState(true);
 	const [emailErr, setEmailErr] = useState(null);
 	const [passwordErr, setPasswordErr] = useState(null);
-	const navigate = useNavigate();
+
 	const dispatch = useDispatch();
 	const email = useRef(null);
 	const password = useRef(null);
@@ -57,8 +57,7 @@ const Login = () => {
 							// An error occurred
 							// ...
 						});
-					console.log(user);
-					navigate("/browse");
+
 					// ...
 				})
 				.catch((error) => {
@@ -75,9 +74,6 @@ const Login = () => {
 			)
 				.then((userCredential) => {
 					const user = userCredential.user;
-
-					console.log(user);
-					navigate("/browse");
 				})
 				.catch((error) => {
 					const errorCode = error.code;

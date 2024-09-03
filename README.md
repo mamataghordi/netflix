@@ -13,6 +13,7 @@
 - created redux store with userSlice
 - implemented signout
 - update profile
+- redirect user to login page when not logged in and wise-versa
 
 # Features
 
