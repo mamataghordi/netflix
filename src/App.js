@@ -1,9 +1,11 @@
+import { Provider } from "react-redux";
 import Body from "./components/Body";
+import appStore from "./utils/appStore";
 function App() {
 	return (
-		<div className="text-center">
+		<Provider store={appStore}>
 			<Body />
-		</div>
+		</Provider>
 	);
 }
 

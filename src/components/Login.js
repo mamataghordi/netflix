@@ -1,18 +1,97 @@
 import React, { useRef, useState } from "react";
 import Header from "./Header";
 import { validateForm } from "../utils/validateForm";
+import {
+	createUserWithEmailAndPassword,
+	signInWithEmailAndPassword,
+	updateProfile,
+} from "firebase/auth";
+import { auth } from "../utils/firebase";
+import { addUser } from "../utils/userSlice";
+import { useNavigate } from "react-router";
+import { useDispatch } from "react-redux";
 const Login = () => {
 	const [isSignIn, setIsSignIn] = useState(true);
 	const [emailErr, setEmailErr] = useState(null);
-
+	const [passwordErr, setPasswordErr] = useState(null);
+	const navigate = useNavigate();
+	const dispatch = useDispatch();
 	const email = useRef(null);
 	const password = useRef(null);
+	const name = useRef();
 	const validateFormHandler = () => {
-		const message = validateForm(email.current.value, password.current.value);
-		console.log(message);
+		setEmailErr(null);
+		setPasswordErr(null);
 
-		setEmailErr(message);
+		const errors = validateForm(email.current.value, password.current.value);
+		if (errors) {
+			return;
+		}
+		if (!isSignIn) {
+			createUserWithEmailAndPassword(
+				auth,
+				email.current.value,
+				password.current.value
+			)
+				.then((userCredential) => {
+					// Signed up
+					const user = userCredential.user;
+					updateProfile(user, {
+						displayName: "Jane Q. User",
+						photoURL: "https://example.com/jane-q-user/profile.jpg",
+					})
+						.then(() => {
+							// Profile updated!
+							// ...
+							const { uid, email, displayName, photoURL } = auth.currentUser;
+							dispatch(
+								addUser({
+									uid: uid,
+									email: email,
+									displayName: displayName,
+									photoURL: photoURL,
+								})
+							);
+						})
+						.catch((error) => {
+							// An error occurred
+							// ...
+						});
+					console.log(user);
+					navigate("/browse");
+					// ...
+				})
+				.catch((error) => {
+					const errorCode = error.code;
+					const errorMessage = error.message;
+					setEmailErr(errorCode + " " + errorMessage);
+					// ..
+				});
+		} else {
+			signInWithEmailAndPassword(
+				auth,
+				email.current.value,
+				password.current.value
+			)
+				.then((userCredential) => {
+					const user = userCredential.user;
+
+					console.log(user);
+					navigate("/browse");
+				})
+				.catch((error) => {
+					const errorCode = error.code;
+					const errorMessage = error.message;
+				});
+		}
+		if (errors.email) {
+			setEmailErr(errors.email);
+		}
+		if (errors.password) {
+			setPasswordErr(errors.password);
+		}
 	};
+
 	const clickHandler = () => {
 		setIsSignIn(!isSignIn);
 	};
@@ -34,6 +113,7 @@ const Login = () => {
 				</h1>
 				{!isSignIn && (
 					<input
+						ref={name}
 						type="text"
 						className=" my-4 p-2 rounded bg-gray-800 border text-white"
 						placeholder="Full Name"
@@ -45,15 +125,14 @@ const Login = () => {
 					className="text-white bg-gray-800 my-2 p-2 rounded bg-transparent border"
 					placeholder="Email or Number"
 				/>
-
+				<p className="text-red-700">{emailErr}</p>
 				<input
 					ref={password}
 					type="password"
 					className="text-white bg-gray-800 my-2 p-2 rounded bg-transparent border"
 					placeholder="Password"
 				/>
-				<p className="text-red-700">{emailErr}</p>
-
+				<p className="text-red-700">{passwordErr}</p>
 				<button
 					onClick={validateFormHandler}
 					className=" my-4 px-16 py-2 bg-red-700 text-lg text-white rounded"

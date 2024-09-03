@@ -9,6 +9,10 @@
 - Sign Up form
 - Form Validations
 - useRef Hook
+- implemented sign in /up api
+- created redux store with userSlice
+- implemented signout
+- update profile
 
 # Features
 
