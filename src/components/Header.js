@@ -9,7 +9,7 @@ const Header = () => {
 	const navigate = useNavigate();
 	const user = useSelector((state) => state.user);
 	useEffect(() => {
-		onAuthStateChanged(auth, (user) => {
+		const unsubscribe = onAuthStateChanged(auth, (user) => {
 			if (user) {
 				//user signed in
 				const { uid, email, displayName } = user;
@@ -21,6 +21,7 @@ const Header = () => {
 				navigate("/");
 			}
 		});
+		return () => unsubscribe();
 	}, []);
 	const handleSignOut = () => {
 		signOut(auth)
