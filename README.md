@@ -15,6 +15,7 @@
 - update profile
 - redirect user to login page when not logged in and wise-versa
 - unsubscribed onauthchanged
+- constants for strings
 
 # Features
 

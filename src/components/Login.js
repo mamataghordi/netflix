@@ -10,6 +10,9 @@ import { auth } from "../utils/firebase";
 import { addUser } from "../utils/userSlice";
 
 import { useDispatch } from "react-redux";
+import MainContainer from "./MainContainer";
+import SecondaryContainer from "./SecondaryContainer";
+import useNowPlayingMovies from "../hooks/useNowPlayingMovies";
 const Login = () => {
 	const [isSignIn, setIsSignIn] = useState(true);
 	const [emailErr, setEmailErr] = useState(null);
@@ -91,10 +94,11 @@ const Login = () => {
 	const clickHandler = () => {
 		setIsSignIn(!isSignIn);
 	};
+	useNowPlayingMovies();
 	return (
 		<div>
 			<Header />
-			<div className="absolute">
+			{/* <div className="absolute">
 				<img
 					src="https://assets.nflxext.com/ffe/siteui/vlv3/36a4db5b-dec2-458a-a1c0-662fa60e7473/1115a02b-3062-4dcc-aae0-94028a0dcdff/IN-en-20240820-TRIFECTA-perspective_WEB_eeff8a6e-0384-4791-a703-31368aeac39f_medium.jpg"
 					alt="netflix bg"
@@ -140,7 +144,9 @@ const Login = () => {
 						? "New To Netflix? Sign up now"
 						: "Already Registered? Sign in Now"}
 				</p>
-			</form>
+			</form> */}
+			<MainContainer />
+			<SecondaryContainer />
 		</div>
 	);
 };
