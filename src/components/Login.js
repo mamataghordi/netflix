@@ -9,10 +9,13 @@ import {
 import { auth } from "../utils/firebase";
 import { addUser } from "../utils/userSlice";
 
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import MainContainer from "./MainContainer";
 import SecondaryContainer from "./SecondaryContainer";
 import useNowPlayingMovies from "../hooks/useNowPlayingMovies";
+import GptSearch from "./GptSearch";
+import { MAIN_PIC } from "../utils/constants";
+
 const Login = () => {
 	const [isSignIn, setIsSignIn] = useState(true);
 	const [emailErr, setEmailErr] = useState(null);
@@ -22,6 +25,7 @@ const Login = () => {
 	const email = useRef(null);
 	const password = useRef(null);
 	const name = useRef();
+	const showGpt = useSelector((state) => state.gpt?.showSearch);
 	const validateFormHandler = () => {
 		setEmailErr(null);
 		setPasswordErr(null);
@@ -98,13 +102,10 @@ const Login = () => {
 	return (
 		<div>
 			<Header />
-			{/* <div className="absolute">
-				<img
-					src="https://assets.nflxext.com/ffe/siteui/vlv3/36a4db5b-dec2-458a-a1c0-662fa60e7473/1115a02b-3062-4dcc-aae0-94028a0dcdff/IN-en-20240820-TRIFECTA-perspective_WEB_eeff8a6e-0384-4791-a703-31368aeac39f_medium.jpg"
-					alt="netflix bg"
-				/>
+			<div className="absolute -z-10">
+				<img src={MAIN_PIC} alt="netflix bg" />
 			</div>
-			<form
+			{/*	<form
 				onSubmit={(e) => e.preventDefault()}
 				className="bg-opacity-70 bg-black h-100lvh flex flex-col absolute rounded w-6/12 my-20 p-5 mx-auto right-0 left-0 "
 			>
@@ -145,8 +146,14 @@ const Login = () => {
 						: "Already Registered? Sign in Now"}
 				</p>
 			</form> */}
-			<MainContainer />
-			<SecondaryContainer />
+			{showGpt ? (
+				<GptSearch />
+			) : (
+				<>
+					<MainContainer />
+					<SecondaryContainer />
+				</>
+			)}
 		</div>
 	);
 };
